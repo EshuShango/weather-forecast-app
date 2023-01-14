@@ -1,46 +1,168 @@
+const OWM_API_KEY = "508852d1991133deb312f4cf22a71a0b";
+const LOCAL_STORAGE_KEY = "weather_history";
+
+//* manipulate the search button
+const searchBtn = document.querySelector("#search-btn");
+//* target the search box
+const searchBox = document.querySelector("#city-input");
+
+//* target history
+const historyEl = document.querySelector("#history");
+
+//* target weather data
+const weatherDataEl = document.querySelector("#weather-data");
+//* target load spinner
+const loadSpinnerEl = document.querySelector("#load-spinner");
+
 let currDTValue = "";
-const fiveDaysOfWeather = []
 
+let history = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];
 
-//* Here's a sample of how you might start the app
-function getWeatherData(){
-  fetch(apiUrl)
-  .then( response => {
-    return response.json()
-  })
-  .then( data => {
-    //* send the data to the parsing function below
-    parseWeatherData(data)
-  })
+for (const searchCity of history) {
+  addHistoryLink(searchCity);
 }
 
+function addHistoryLink(cityname) {
+  const newHistoryEl = document.createElement("button");
 
-function parseWeatherData(data){
-  data.forEach( obj => {
-    //* use moment or dayjs to parse the obj dt variable and get the "real date"
-    const dateObj = new moment(obj.list.dt)
+  newHistoryEl.classList.add("col-md-12", "btn", "btn-secondary");
+  newHistoryEl.style = "margin-top: 10px;";
+  newHistoryEl.textContent = cityname;
 
-    //* from this dateObj, use moment or js to get the date it represents. ***This is for you to do ***.
-    const currday = ""; 
+  newHistoryEl.addEventListener("click", () => {
+    getWeatherData(cityname, false);
+  });
 
-    //* if the current dt value differs from the global variable, AND we don't have data in our array for this day, 
-    //* we must be on a new day
-    if( currDay !== currDTValue && fiveDaysOfWeather.length < 5 && !fiveDaysOfWeather.find( day => day.dt === obj.dt ) ){
-      currDTValue = currDay // update the global variable so we don't use this day again
+  historyEl.prepend(newHistoryEl);
+}
 
-      //* if JS is still in this function, then we must be encountering this dt object for the first time. So the obj variable used in the forEach() must be referring to the firt hour block for this day. get the first record (the obj variable above) and use that for the weather for this day
-      fiveDaysOfWeather.push(obj)
+//* When user types in searchBox
+//* Then somehow a fucntion appends the cityname var
+//* Then when the searchBtn is pressed (event listenr is waiting for a click)
+//!
+//* Then the func gets the info from the API:
+
+function getWeatherData(cityname, saveHistory) {
+  const weatherApiURL = `https://api.openweathermap.org/data/2.5/weather?q=${cityname}&units=imperial&appid=${OWM_API_KEY}`;
+  const forecastApiURL = `https://api.openweathermap.org/data/2.5/forecast?q=${cityname}&units=imperial&appid=${OWM_API_KEY}`;
+
+  let failed = false;
+  fetch(forecastApiURL)
+    .then((response) => {
+      if (!response.ok) {
+        failed = true;
+      }
+      return response.json();
+    })
+    .then((forecastData) => {
+      fetch(weatherApiURL)
+        .then((response) => {
+          if (!response.ok) {
+            failed = true;
+          }
+          return response.json();
+        })
+        .then((currWeatherData) => {
+          //* process the data
+          if (failed) {
+            alert("Bad city name, try again");
+          } else {
+            searchBox.value = ""
+
+            processWeatherData(currWeatherData, forecastData);
+
+            if (saveHistory) {
+              localStorage.setItem(
+                LOCAL_STORAGE_KEY,
+                JSON.stringify(history.concat(currWeatherData.name))
+              );
+
+              addHistoryLink(currWeatherData.name);
+            }
+          }
+        });
+    });
+}
+
+// currWeatherData = obj, forecastData = array of obj
+function processWeatherData(currWeatherData, forecastData) {
+  //add to history (if not first load)
+
+  //* weather data
+  let cityEl = document.querySelector(`#city`);
+  cityEl.textContent = currWeatherData.name;
+
+  let iconEl = document.querySelector(`#icon`);
+  const iconId = currWeatherData.weather[0].icon;
+  const iconUrl = `http://openweathermap.org/img/wn/${iconId}.png`;
+  iconEl.src = iconUrl;
+
+  const dateObj = dayjs.unix(currWeatherData.dt);
+
+  let dateEl = document.querySelector(`#date`);
+  //* the textContent takes the assigned var which is i....
+  dateEl.textContent = dateObj.format("MMM D");
+
+  let tempEl = document.querySelector(`#temp`);
+  tempEl.textContent = currWeatherData.main.temp;
+
+  let windEl = document.querySelector(`#wind`);
+  windEl.textContent = currWeatherData.wind.speed;
+
+  let humidEl = document.querySelector(`#humid`);
+  humidEl.textContent = currWeatherData.main.humidity;
+
+  //* forecast data
+  // filter raw data to just 1 per day
+  const filteredWeatherData = forecastData.list.filter((weatherobj) => {
+    const dateObj = dayjs.unix(weatherobj.dt);
+    const dateHour = dateObj.hour();
+
+    //only for noon
+    if (dateHour == 12) {
+      return true;
+    } else {
+      return false;
     }
-  })
+  });
+  //*
+  for (i = 0; i < 5; i++) {
+    //* take the data on to the elements
+    //* icon manipulate
+    let iconEl = document.querySelector(`#icon-${i}`);
+    const iconId = filteredWeatherData[i].weather[0].icon;
+    const iconUrl = `http://openweathermap.org/img/wn/${iconId}.png`;
+    iconEl.src = iconUrl;
+
+    const dateObj = dayjs.unix(filteredWeatherData[i].dt);
+
+    let dateEl = document.querySelector(`#date-${i}`);
+    //* the textContent takes the assigned var which is i....
+    dateEl.textContent = dateObj.format("MMM D");
+
+    let tempEl = document.querySelector(`#temp-${i}`);
+    tempEl.textContent = filteredWeatherData[i].main.temp;
+
+    let windEl = document.querySelector(`#wind-${i}`);
+    windEl.textContent = filteredWeatherData[i].wind.speed;
+
+    let humidEl = document.querySelector(`#humid-${i}`);
+    humidEl.textContent = filteredWeatherData[i].main.humidity;
+  }
+
+  // all done loading!
+  weatherDataEl.classList.remove("d-none");
+  loadSpinnerEl.classList.add("d-none");
 
   //* Once the code gets here, we should have one weather object per day.
-  console.log(fiveDaysOfWeather)
 }
 
+getWeatherData("Minneapolis",false);
 
-getWeatherData();
-
-
+searchBtn.addEventListener("click", () => {
+  const cityName = searchBox.value;
+  getWeatherData(cityName,true);
+});
 
 /*
 
@@ -223,49 +345,18 @@ getWeatherData();
 
 */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 
-//* Working with complex data types is a key ingredient to being a solid coder. Here are some activities to help you. Some of these activities can be done in a single line of code, others maybe not. First and foremost the goal is to solve the problem. Then you can try and refactor if you want to.
+//* Working with complex data types is a key ingredient to being a solid coder. 
+//* Here are some activities to help you. Some of these activities can be done in a single line of code,
+//* others maybe not. First and foremost the goal is to solve the problem. 
+//* Then you can try and refactor if you want to.
 
+
+
+
+
+// !
 //* Given this array of objects:
 
 const arrOfObjs = [

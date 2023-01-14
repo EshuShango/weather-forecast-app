@@ -8,23 +8,24 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    
+    <!--day.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
     <!--MDB (BS on steriods !)-->
     <script
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.js"
     ></script>
-       <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-       <script
-       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-       crossorigin="anonymous"
-     ></script>
-     <script
-       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-       integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-       crossorigin="anonymous"
-     ></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
     <!-- Bootstrap CSS -->
     <!-- <link
       rel="stylesheet"
@@ -32,7 +33,7 @@
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
       crossorigin="anonymous"
     /> -->
-    <link rel="stylesheet" href="./Assets/CSS/reset.css" />
+    <!-- <link rel="stylesheet" href="./Assets/CSS/reset.css" /> -->
     <link rel="stylesheet" href="./Assets/CSS/style.css" />
     <!-- Font Awesome -->
     <link
@@ -51,26 +52,129 @@
     />
     <!-- <script src="https://kit.fontawesome.com/e87164d213.js" crossorigin="anonymous"></script> -->
   </head>
-
-  <!-- HEADER -->
-  <header class=".text-center">
-    <div class="row mt-5 mb-3 w-50 mx-auto title">
-      <h1>Weather App</h1>
-      <p>
-        Go ahead, throw a city back and select the information you want to use!
-      </p>
-    </div>
-  </header>
-
   <!-- BODY -->
   <body>
-    <!-- Optional JavaScript -->
- 
-    <!-- <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script> -->
+    <!-- Play with BS later for style-->
+
+    <!-- HEADER -->
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div
+          class="container d-flex justify-content-center"
+          style="color: white"
+        >
+          Weather Dashboard
+        </div>
+      </nav>
+    </header>
+    <!-- END of HEADER-->
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-outline col-md-12">
+            <input type="text" id="city-input" class="form-control" />
+            <label class="form-label" for="city-input">City Name</label>
+          </div>
+          <button class="col-md-12 btn btn-primary" id="search-btn">Search</button>
+          <div class="form-outline col-md-12" id="history" style="margin-top:10px;">
+          </div>
+        </div>
+
+        <div class="col-md-9 d-flex justify-content-center" id="load-spinner">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <div class="col-md-9 d-none" id="weather-data">
+          <div class="card mb-3">
+            <div class="card-header" id="city"></div>
+            <div class="card-body">
+              <image class="card-title" id="icon" src=""></image>
+              <p class="card-text">
+                <div class="city-data">Time: <span id="date"></span></div>
+                <div class="city-data">Temp: <span id="temp"></span> °F</div>
+                <div class="city-data">Wind: <span id="wind"></span> MPH</div>
+                <div class="city-data">Humidity: <span id="humid"></span> %</div>
+              </p>
+            </div>
+          </div>
+
+          <div class="day-forecast-ctn row">
+            <div class="col">
+              <div class="card text-white bg-dark mb-3">
+                <div class="card-header" id="date-0"></div>
+                <div class="card-body">
+                  <image class="card-title" id="icon-0" src=""></image>
+                  <p class="card-text">
+                    
+                    <div class="city-data">Temp: <span id="temp-0"></span> °F</div>
+                    <div class="city-data">Wind: <span id="wind-0"></span> MPH</div>
+                    <div class="city-data">Humidity: <span id="humid-0"></span> %</div>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card text-white bg-dark mb-3">
+                <div class="card-header" id="date-1"></div>
+                <div class="card-body">
+                  <image class="card-title" id="icon-1" src=""></image>
+                  <p class="card-text">
+                    
+                    <div class="city-data">Temp: <span id="temp-1"></span> °F</div>
+                    <div class="city-data">Wind: <span id="wind-1"></span> MPH</div>
+                    <div class="city-data">Humidity: <span id="humid-1"></span> %</div>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card text-white bg-dark mb-3">
+                <div class="card-header" id="date-2"></div>
+                <div class="card-body">
+                  <image class="card-title" id="icon-2" src=""></image>
+                  <p class="card-text">
+                    <div class="city-data">Temp: <span id="temp-2"></span> °F</div>
+                    <div class="city-data">Wind: <span id="wind-2"></span> MPH</div>
+                    <div class="city-data">Humidity: <span id="humid-2"></span> %</div>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card text-white bg-dark mb-3">
+                <div class="card-header" id="date-3"></div>
+                <div class="card-body">
+                  <image class="card-title" id="icon-3" src=""></image>
+                  <p class="card-text">
+                    
+                    <div class="city-data">Temp: <span id="temp-3"></span> °F</div>
+                    <div class="city-data">Wind: <span id="wind-3"></span> MPH</div>
+                    <div class="city-data">Humidity: <span id="humid-3"></span> %</div>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="card text-white bg-dark mb-3">
+                <div class="card-header" id="date-4"></div>
+                <div class="card-body">
+                  <image class="card-title" id="icon-4" src=""></image>
+                  <p class="card-text">
+                    <div class="city-data">Temp: <span id="temp-4"></span> °F</div>
+                    <div class="city-data">Wind: <span id="wind-4"></span> MPH</div>
+                    <div class="city-data">Humidity: <span id="humid-4"></span> %</div>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="./Assets/JS/main.js"></script>
   </body>
 </html>
