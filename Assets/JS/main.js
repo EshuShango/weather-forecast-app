@@ -1,19 +1,28 @@
+//* A const var to store the OpenWeatherMap Application Program Interface: Key/ID 
 const OWM_API_KEY = "508852d1991133deb312f4cf22a71a0b";
+
+//* A const var to store the "Weather" for selected Cities
 const LOCAL_STORAGE_KEY = "weather_history";
 
-//* manipulate the search button
-const searchBtn = document.querySelector("#search-btn");
-//* target the search box
-const searchBox = document.querySelector("#city-input");
+//! I used the geElById() method, because it's faster due to only 
+//! needing to search through the DOM for a single element with a specific id
 
-//* target history
-const historyEl = document.querySelector("#history");
+//* A const var to select the manipulate the search button
+const searchBtn = document.getElementById("search-btn");
 
-//* target weather data
-const weatherDataEl = document.querySelector("#weather-data");
-//* target load spinner
-const loadSpinnerEl = document.querySelector("#load-spinner");
+//* A const var to target the search box
+const searchBox = document.getElementById("city-input");
 
+//* A const var to target the history Element
+const historyEl = document.getElementById("history");
+
+//* A const var to target the weather data
+const weatherDataEl = document.getElementById("weather-data");
+//* A const var to target the load spinner
+const loadSpinnerEl = document.getElementById("load-spinner");
+
+
+//! let var because there will be mutable data passed through them
 let currDTValue = "";
 
 let history = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)) || [];

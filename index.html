@@ -26,14 +26,7 @@
       integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
       crossorigin="anonymous"
     ></script>
-    <!-- Bootstrap CSS -->
-    <!-- <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-      crossorigin="anonymous"
-    /> -->
-    <!-- <link rel="stylesheet" href="./Assets/CSS/reset.css" /> -->
+    <!-- (MDB) Bootstrap CSS -->
     <link rel="stylesheet" href="./Assets/CSS/style.css" />
     <!-- Font Awesome -->
     <link
@@ -50,8 +43,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.1.0/mdb.min.css"
       rel="stylesheet"
     />
-    <!-- <script src="https://kit.fontawesome.com/e87164d213.js" crossorigin="anonymous"></script> -->
   </head>
+
   <!-- BODY -->
   <body>
     <!-- Play with BS later for style-->
@@ -67,32 +60,39 @@
         </div>
       </nav>
     </header>
-    <!-- END of HEADER-->
+    <!-- END HEADER-->
 
+    <!-- BEGIN-Left Col -->
     <div class="container-fluid">
       <div class="row">
         <div class="col-md-3">
+          <!-- BEGIN-FORM-INPUT -->
           <div class="form-outline col-md-12">
             <input type="text" id="city-input" class="form-control" />
             <label class="form-label" for="city-input">City Name</label>
           </div>
+        
+          <!-- BEGIN-SEARCH-BTN -->
           <button class="col-md-12 btn btn-primary" id="search-btn">Search</button>
           <div class="form-outline col-md-12" id="history" style="margin-top:10px;">
           </div>
         </div>
-
+        <!-- END-Left-COL -->
+        
+        <!-- In case we have a problem, this will show the following below -->
         <div class="col-md-9 d-flex justify-content-center" id="load-spinner">
           <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
-
+        <!-- BEGIN-Weather-Disp-Cards -->
         <div class="col-md-9 d-none" id="weather-data">
           <div class="card mb-3">
             <div class="card-header" id="city"></div>
             <div class="card-body">
               <image class="card-title" id="icon" src=""></image>
               <p class="card-text">
+
                 <div class="city-data">Time: <span id="date"></span></div>
                 <div class="city-data">Temp: <span id="temp"></span> °F</div>
                 <div class="city-data">Wind: <span id="wind"></span> MPH</div>
